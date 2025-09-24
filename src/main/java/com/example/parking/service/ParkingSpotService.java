@@ -52,5 +52,10 @@ public class ParkingSpotService {
         }
     }
 
+    public ParkingSpot findById(Long id){
+        return spotsRepo.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Parking spot with id " + id + " not found"));
+    }
+
 
 }
