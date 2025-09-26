@@ -8,6 +8,8 @@ import org.springframework.transaction.annotation.Transactional;
 import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.time.OffsetDateTime;
 import java.util.List;
 
 @Service
@@ -58,4 +60,8 @@ public class ParkingSpotService {
     }
 
 
+    public List<ParkingSpot> findAvailableByGarageAndInterval(Long garageId, OffsetDateTime startTime, OffsetDateTime endTime) {
+        garageRepo.findById(garageId).orElseThrow(() -> new IllegalArgumentException("Garage with id " + garageId + " not found"));
+        return spotsRepo.findAvailableByGarageAndInterval(garageId, startTime, endTime);
+    }
 }

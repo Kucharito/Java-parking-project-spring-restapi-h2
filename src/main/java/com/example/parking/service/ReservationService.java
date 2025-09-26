@@ -3,12 +3,14 @@ package com.example.parking.service;
 import com.example.parking.domain.ParkingSpot;
 import com.example.parking.domain.Reservation;
 import com.example.parking.domain.ReservationStatus;
+import com.example.parking.repo.GarageRepository;
 import com.example.parking.repo.ReservationRepository;
 import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.OffsetDateTime;
+import java.util.List;
 import java.util.Locale;
 
 @Service
@@ -16,6 +18,7 @@ import java.util.Locale;
 public class ReservationService {
     private final ReservationRepository reservationRepo;
     private final ParkingSpotService spotsRepo;
+    private final GarageRepository garageRepo;
 
     @Transactional
     public Reservation create(Long spotId, String licensePlate, OffsetDateTime startTime, OffsetDateTime endTime){
@@ -75,17 +78,36 @@ public class ReservationService {
             throw new IllegalArgumentException("Reservation with id " + id + " cannot be checked in at this time");
         }
         r.setStatus(ReservationStatus.CHECKED_IN);
+
+        ParkingSpot spot = r.getParkingSpot();
+        spot.setOccupied(true);///////////////////
+
         return r;
     }
 
     @Transactional
     public Reservation checkOut(Long id, OffsetDateTime now){
         Reservation r = get(id);
-        if(r.getStatus()!= ReservationStatus.CHECKED_OUT){
+        if(r.getStatus()!= ReservationStatus.CHECKED_IN){
             throw new IllegalArgumentException("Reservation with id " + id + " cannot be checked out");
         }
         r.setStatus(ReservationStatus.CHECKED_OUT);
+
+        ParkingSpot spot = r.getParkingSpot();
+        spot.setOccupied(false);///////////////////
+
         return r;
+    }
+
+    @Transactional(readOnly = true)
+    public List<ParkingSpot> findAvailableSpots(Long garageId, OffsetDateTime startTime, OffsetDateTime endTime){
+        if(garageId == null || !garageRepo.existsById(garageId)){
+            throw new IllegalArgumentException("Garage with id " + garageId + " not found");
+        }
+        if(startTime == null || endTime == null || !endTime.isAfter(startTime)){
+            throw new IllegalArgumentException("Invalid time range");
+        }
+        return spotsRepo.findAvailableByGarageAndInterval(garageId, startTime, endTime);
     }
 
 }
