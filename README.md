@@ -104,24 +104,24 @@ curl -X POST "http://localhost:8081/api/garages?name=Downtown" \
   -d ''
 ```
 
-## 📋 Get all garages
+### 📋 Get all garages
 ```bash
 curl -X GET "http://localhost:8081/api/garages" -H "accept: */*"
 ```
 
-### 🅿️ Parking Spots
-## Create a parking spot
+## 🅿️ Parking Spots
+### Create a parking spot
 
 ```
 curl -X POST "http://localhost:8081/api/parkingspots?garageId=1&spotNumber=A1&type=LARGE" \
   -H "accept: */*" \
   -d ''
 ```
-## 📋 Get all parking spots
+### 📋 Get all parking spots
 curl -X GET "http://localhost:8081/api/parkingspots" -H "accept: */*"
 
 
-## 📅 Reservations
+### 📅 Reservations
 Create a reservation
 ```bash
 curl -X POST "http://localhost:8081/api/reservations" \
@@ -135,12 +135,12 @@ curl -X POST "http://localhost:8081/api/reservations" \
   }'
 
 ```
-## ✅ Check in
+### ✅ Check in
 curl -X POST "http://localhost:8081/api/reservations/1/check-in?now=2025-09-21T08:00:00Z" \
   -H "accept: */*" \
   -d ''
 
-## 🏁 Check out
+### 🏁 Check out
 ```bash
 curl -X POST "http://localhost:8081/api/reservations/1/check-out?now=2025-09-21T10:00:00Z" \
   -H "accept: */*" \
@@ -148,13 +148,13 @@ curl -X POST "http://localhost:8081/api/reservations/1/check-out?now=2025-09-21T
 
 ```
 
-## 📋 Get reservation by ID
+### 📋 Get reservation by ID
 ```bash 
 curl -X GET "http://localhost:8081/api/reservations/1" -H "accept: */*"
 
 ```
 
-## ❌ Delete reservation
+### ❌ Delete reservation
 ```bash
 curl -X DELETE "http://localhost:8081/api/reservations/1" -H "accept: */*"
 ```
@@ -167,7 +167,7 @@ curl -X DELETE "http://localhost:8081/api/reservations/1" -H "accept: */*"
 - Add simple **frontend** for interaction with REST API
 
 
-### 🧑‍💻 Author
+## 🧑‍💻 Author
 Created by Adam Kuchár
 
 
