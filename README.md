@@ -136,9 +136,11 @@ curl -X POST "http://localhost:8081/api/reservations" \
 
 ```
 ### ✅ Check in
+```bash
 curl -X POST "http://localhost:8081/api/reservations/1/check-in?now=2025-09-21T08:00:00Z" \
   -H "accept: */*" \
   -d ''
+```
 
 ### 🏁 Check out
 ```bash
