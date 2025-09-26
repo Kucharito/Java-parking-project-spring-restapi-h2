@@ -118,8 +118,9 @@ curl -X POST "http://localhost:8081/api/parkingspots?garageId=1&spotNumber=A1&ty
   -d ''
 ```
 ### 📋 Get all parking spots
+```bash
 curl -X GET "http://localhost:8081/api/parkingspots" -H "accept: */*"
-
+```
 
 ### 📅 Reservations
 Create a reservation
