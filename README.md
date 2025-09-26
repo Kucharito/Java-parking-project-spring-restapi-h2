@@ -23,9 +23,6 @@ The application was created as part of a university project and serves as a demo
 ## 🚀 Running the project
 
 1. **Clone the repository**
-   ```bash
-   git clone https://github.com/<your-username>/JavaParkingSpring.git
-   cd JavaParkingSpring
 
 2. **Run with Maven**
     ```bash
