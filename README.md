@@ -95,24 +95,70 @@ The application was created as part of a university project and serves as a demo
 
 ## 📑 Example requests (Postman / curl)
 
-## Create a reservation 
-    POST http://localhost:8081/api/reservations
-    Content-Type: application/json
-    {
-        "spotId": 1,
-        "licensePlate": "BA123XY",
-        "startTime": "2025-09-21T08:00:00Z",
-        "endTime": "2025-09-21T10:00:00Z"
-    }
+### 🏢 Garages
 
-## Check in
-    POST http://localhost:8081/api/reservations/1/checkin
+#### ➕ Create a garage
+```bash
+curl -X POST "http://localhost:8081/api/garages?name=Downtown" \
+  -H "accept: */*" \
+  -d ''
+```
 
-## Check out
-    POST http://localhost:8081/api/reservations/1/checkout
+## 📋 Get all garages
+```bash
+curl -X GET "http://localhost:8081/api/garages" -H "accept: */*"
+```
 
-## Get all spots 
-    GET http://localhost:8081/api/spots
+### 🅿️ Parking Spots
+## Create a parking spot
+
+```
+curl -X POST "http://localhost:8081/api/parkingspots?garageId=1&spotNumber=A1&type=LARGE" \
+  -H "accept: */*" \
+  -d ''
+```
+## 📋 Get all parking spots
+curl -X GET "http://localhost:8081/api/parkingspots" -H "accept: */*"
+
+
+## 📅 Reservations
+Create a reservation
+```bash
+curl -X POST "http://localhost:8081/api/reservations" \
+  -H "accept: */*" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "spotId": 1,
+    "licensePlate": "BA123XY",
+    "startTime": "2025-09-21T08:00:00Z",
+    "endTime": "2025-09-21T10:00:00Z"
+  }'
+
+```
+## ✅ Check in
+curl -X POST "http://localhost:8081/api/reservations/1/check-in?now=2025-09-21T08:00:00Z" \
+  -H "accept: */*" \
+  -d ''
+
+## 🏁 Check out
+```bash
+curl -X POST "http://localhost:8081/api/reservations/1/check-out?now=2025-09-21T10:00:00Z" \
+  -H "accept: */*" \
+  -d ''
+
+```
+
+## 📋 Get reservation by ID
+```bash 
+curl -X GET "http://localhost:8081/api/reservations/1" -H "accept: */*"
+
+```
+
+## ❌ Delete reservation
+```bash
+curl -X DELETE "http://localhost:8081/api/reservations/1" -H "accept: */*"
+```
+
 
 
 ### TODOs 
