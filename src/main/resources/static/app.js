@@ -52,3 +52,53 @@ document.getElementById('garageForm').addEventListener('submit', async (e) => {
 });
 
 document.addEventListener('DOMContentLoaded', loadGarages);
+
+
+async function loadSpots(garageId){
+    const list = document.getElementById('spots');
+    if(!garageId) {
+        list.innerHTML = `<li class="text-gray-500">Pick garageID and press "Load spots".</li>`;
+        return;
+    }
+    try {
+        const data = await http(`${API}/parkingspots?garageId=${encodeURIComponent(garageId)}`);
+        const html = Array.isArray(data) && data.length
+            ? data.map(s => `<li>spot #${s.id} — ${s.spotNumber} <span class="text-gray-500">(${s.type})</span></li>`).join('')
+            : `<li class="text-gray-500">No spots.</li>`;
+        list.innerHTML = html;
+    }catch (e) {
+        list.innerHTML = `<li class="text-red-600">Error: ${e.message}</li>`;
+    }
+}
+
+document.getElementById('loadSpotBtn').addEventListener('click',() => {
+    const garageId = document.getElementById('spotsGarageId').value.trim();
+    loadSpots(garageId);
+});
+
+document.getElementById('resForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const garageId = document.getElementById('spotsGarageId').value.trim();
+    const spotNumber = document.getElementById('spotNumber').value.trim();
+    const type = document.getElementById('spotType').value;
+    if (!garageId || !spotNumber || !type) {
+        alert('All fields are required');
+        return;
+    }
+    try {
+        const qs = new URLSearchParams({garageId, spotNumber, type}).toString();
+        await http(`${API}/parkingspots?${qs}`, {method: 'POST'});
+
+
+        const filterGarageId = document.getElementById('spotsGarageId').value.trim();
+        if (filterGarageId && filterGarageId === garageId) {
+            await loadSpots(garageId);
+        }
+
+        document.getElementById('spotsGarageId').value = '';
+        document.getElementById('spotNumber').value = '';
+        document.getElementById('spotType').value = 'LARGE';
+    } catch (e2) {
+        alert(`Error creating spot: ${e2.message}`);
+    }
+});
