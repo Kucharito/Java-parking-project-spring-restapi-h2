@@ -265,3 +265,38 @@ form.addEventListener('submit', async (e) => {
     const sid = Number(spotIdInput.value.trim());
     if (Number.isFinite(sid) && sid > 0) loadReservations(sid);
 })();
+
+function renderAvailabilityTable(items){
+    if(!Array.isArray(items) || items.length === 0){
+        return `<div class="text-gray-500">No free spaces.</div>`;
+    }
+    const rows = items.map((s, i) => `
+    <tr class="border-b last:border-0">
+      <td class="px-3 py-2 whitespace-nowrap">#${i + 1}</td>
+      <td class="px-3 py-2 font-medium">${s.number ?? '-'}</td>
+      <td class="px-3 py-2">${s.type ?? '-'}</td>
+      <td class="px-3 py-2 text-right">
+        <button class="quick-res px-2 py-1 border rounded hover:bg-gray-100 text-xs"
+                data-spot-id="${s.id}" data-spot-number="${s.number}">
+          Quick reserve
+        </button>
+      </td>
+    </tr>
+  `).join('');
+
+    return `
+    <div class="overflow-x-auto rounded border">
+        <table class="min-w-full text-sm">
+            <thead class="bg-gray-50 text-gray-700">
+            <tr>
+                <th class="text-left px-3 py-2">#</th>
+                <th class="text-left px-3 py-2">Spot Number</th>
+                <th class="text-left px-3 py-2">Type</th>
+                <th class="text-right px-3 py-2">Action</th>
+            </tr>
+            </thead>
+            <tbody>${rows}</tbody>
+      </table>
+    </div>
+    `;
+}
