@@ -38,6 +38,7 @@ async function loadGarages() {
     } catch (e) {
         document.getElementById('garages').innerHTML =
             `<li class="text-red-600">Chyba: ${e.message}</li>`;
+            `<li class="text-red-600">Chyba: ${e.message}</li>`;
     }
 }
 document.getElementById('garages').addEventListener('click', loadGarages);
@@ -196,13 +197,11 @@ async function loadReservations(spotId) {
     }
 }
 
-// autoload pri zmene
 spotIdInput.addEventListener('change', () => {
     const sid = Number(spotIdInput.value.trim());
     if (Number.isFinite(sid) && sid > 0) loadReservations(sid);
 });
 
-// submit novej rezervácie (nezmenené)
 form.addEventListener('submit', async (e) => {
     e.preventDefault();
 
@@ -260,12 +259,13 @@ form.addEventListener('submit', async (e) => {
     }
 });
 
-// autoload ak je predvyplnené
 (() => {
     const sid = Number(spotIdInput.value.trim());
     if (Number.isFinite(sid) && sid > 0) loadReservations(sid);
 })();
 
+
+//availability
 function renderAvailabilityTable(items){
     if(!Array.isArray(items) || items.length === 0){
         return `<div class="text-gray-500">No free spaces.</div>`;
@@ -300,3 +300,53 @@ function renderAvailabilityTable(items){
     </div>
     `;
 }
+
+async function loadAvailability(){
+    const garageId = document.getElementById('availGarageId').value.trim();
+    const startIso = toLocalOffsetISOString(document.getElementById('availStartTime').value);
+    const endIso = toLocalOffsetISOString(document.getElementById('availEndTime').value);
+    const output = document.getElementById('availabilityOutput');
+
+    if(!garageId || !startIso || !endIso){
+        output.innerHTML = `<div class="text-gray-500">Fill all fields and press "Check availability".</div>`;
+        output.className = 'mt-3 text-sm text-gray-600';
+        return;
+    }
+
+    output.innerHTML = '' +
+        '<div class="text-gray-500">Loading…</div>';
+
+    try{
+        const url =
+            `${API}/availability?garageId=${encodeURIComponent(garageId)}&start=${encodeURIComponent(startIso)}&end=${encodeURIComponent(endIso)}`;
+        const data = await http(url);
+        output.innerHTML = renderAvailabilityTable(data);
+        output.className = 'mt-3 text-sm text-gray-800';
+    }catch(e){
+        output.innerHTML = `<div class="text-red-700">Error: ${e.message}</div>`;
+        output.className = 'mt-3 text-sm';
+    }
+
+}
+(function initAvailability(){
+    const form = document.getElementById('availabilityForm');
+    const output = document.getElementById('availabilityOutput');
+    if (!form || !output) return;
+
+    form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        loadAvailability();
+    });
+
+    output.addEventListener('click', (e) => {
+        const btn = e.target.closest('.quick-res');
+        if (!btn) return;
+        const spotId = btn.dataset.spotId;
+        document.getElementById('resSpotId')?.setAttribute('value', spotId);
+        const s = document.getElementById('availStartTime')?.value;
+        const en = document.getElementById('availEndTime')?.value;
+        if (s) document.getElementById('startTime')?.setAttribute('value', s);
+        if (en) document.getElementById('endTime')?.setAttribute('value', en);
+        document.getElementById('Reservation-section')?.scrollIntoView({ behavior: 'smooth' });
+    });
+})();
