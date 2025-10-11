@@ -161,6 +161,39 @@ async function loadSpots(garageId) {
     }
 }
 
+document.addEventListener('DOMContentLoaded', () => {
+    const form = document.getElementById('deleteResForm');
+    if(!form){
+        console.error('❌ deleteResForm not found in DOM');
+        return;
+    }
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const id = document.getElementById('resIdDel').value.trim();
+        const output = document.getElementById('delResOutput');
+
+        if (!id) {
+            output.textContent = 'Reservation ID is required';
+            output.classList.add('text-red-600');
+            return;
+        }
+        try {
+            await http(`${API}/reservations/${encodeURIComponent(id)}`, {method: 'DELETE'});
+            document.getElementById('resIdDel').value = '';
+            output.textContent = `✅ Reservation #${id} deleted`;
+            output.classList.remove('text-red-600');
+            output.classList.add('text-green-700');
+            const sid = Number(document.getElementById('resSpotId').value.trim());
+            if (Number.isFinite(sid) && sid > 0) loadReservations(sid);
+        } catch (err) {
+            output.textContent = `❌ Error deleting reservation: ${err.message}`;
+            output.classList.remove('text-green-700');
+            output.classList.add('text-red-600');
+        }
+    });
+});
+
+
 
 document.getElementById('loadSpotBtn').addEventListener('click',() => {
     const garageId = document.getElementById('spotsGarageId').value.trim();
@@ -282,8 +315,6 @@ async function loadReservations(spotId) {
         outputEl.className = 'mt-3 text-sm text-gray-800';
     } catch (e) {
         const details = e && e.payload ? `<pre class="mt-2 p-2 rounded bg-red-50 text-xs overflow-auto">${JSON.stringify(e.payload, null, 2)}</pre>` : '';
-        /*outputEl.innerHTML = `<div class="text-red-700">Kazda revzervacia musi prisluchat jednemu autu v garazi</div>${details}`;
-        outputEl.className = 'mt-3 text-sm';*/
     }
 }
 
