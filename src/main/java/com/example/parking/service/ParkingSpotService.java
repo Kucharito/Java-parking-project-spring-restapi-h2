@@ -43,6 +43,14 @@ public class ParkingSpotService {
         return spotsRepo.save(spot);
     }
 
+    public void deleteSpot(Long id){
+        if(!spotsRepo.existsById(id)){
+            throw new IllegalArgumentException("Parking spot with id " + id + " not found");
+        } else {
+            spotsRepo.deleteById(id);
+        }
+    }
+
     private ParkingSpot.SpotType parseTypeorDefault(String typeRaw, ParkingSpot.SpotType defaultType) {
         if (typeRaw == null || typeRaw.isBlank()) {
             return defaultType;
@@ -64,4 +72,6 @@ public class ParkingSpotService {
         garageRepo.findById(garageId).orElseThrow(() -> new IllegalArgumentException("Garage with id " + garageId + " not found"));
         return spotsRepo.findAvailableByGarageAndInterval(garageId, startTime, endTime);
     }
+
+
 }

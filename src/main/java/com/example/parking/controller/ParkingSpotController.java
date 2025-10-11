@@ -28,4 +28,11 @@ public class ParkingSpotController {
         return ResponseEntity.created(URI.create("/api/parkingspots/" + created.getId())).body(created).getBody();
 
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable Long id){
+        service.deleteSpot(id);
+        return ResponseEntity.noContent().build();
+    }
+
 }

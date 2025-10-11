@@ -98,28 +98,69 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
+document.addEventListener('DOMContentLoaded', () => {
+    const form = document.getElementById('deleteSpotForm');
+    if(!form){
+        console.error('❌ deleteSpotForm not found in DOM');
+        return;
+    }
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const id = document.getElementById('spotIdDel').value.trim();
+        const output = document.getElementById('delSpotOutput');
 
+        if (!id) {
+            output.textContent = 'Spot ID is required';
+            output.classList.add('text-red-600');
+            return;
+        }
+        try {
+            await http(`${API}/parkingspots/${encodeURIComponent(id)}`, {method: 'DELETE'});
+            document.getElementById('spotIdDel').value = '';
+            output.textContent = `✅ Spot #${id} deleted`;
+            output.classList.remove('text-red-600');
+            output.classList.add('text-green-700');
+            await loadSpots();
+        } catch (err) {
+            output.textContent = `❌ Error deleting spot: ${err.message}`;
+            output.classList.remove('text-green-700');
+            output.classList.add('text-red-600');
+        }
 
-//document.getElementById('garages').addEventListener('click', loadGarages);
+    });
+});
 
+let currentGarageId = null;
 
-
-async function loadSpots(garageId){
+async function loadSpots(garageId) {
     const list = document.getElementById('spots');
-    if(!garageId) {
+
+    if (!garageId) {
+        const input = document.getElementById('spotsGarageId');
+        if (input && input.value.trim()) {
+            garageId = input.value.trim();
+        } else if (currentGarageId) {
+            garageId = currentGarageId; // fallback na posledné použité ID
+        }
+    }
+    if (!garageId) {
         list.innerHTML = `<li class="text-gray-500">Pick garageID and press "Load spots".</li>`;
         return;
     }
+
+    currentGarageId = garageId;
+
     try {
         const data = await http(`${API}/parkingspots?garageId=${encodeURIComponent(garageId)}`);
         const html = Array.isArray(data) && data.length
             ? data.map(s => `<li>spot #${s.id} — ${s.spotNumber} <span class="text-gray-500">(${s.type})</span></li>`).join('')
             : `<li class="text-gray-500">No spots.</li>`;
         list.innerHTML = html;
-    }catch (e) {
+    } catch (e) {
         list.innerHTML = `<li class="text-red-600">Error: ${e.message}</li>`;
     }
 }
+
 
 document.getElementById('loadSpotBtn').addEventListener('click',() => {
     const garageId = document.getElementById('spotsGarageId').value.trim();
