@@ -23,4 +23,12 @@ public class GarageService {
         });
         return repo.save(Garage.builder().name(name).build());
     }
+
+    public void deleteGarage(Long id){
+        if(!repo.existsById(id)){
+            throw new IllegalArgumentException("Garage with id " + id + " not found");
+        } else {
+            repo.deleteById(id);
+        }
+    }
 }

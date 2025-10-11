@@ -37,8 +37,8 @@ async function loadGarages() {
         document.getElementById('garages').innerHTML = html; // <-- sem
     } catch (e) {
         document.getElementById('garages').innerHTML =
-            `<li class="text-red-600">Chyba: ${e.message}</li>`;
-            `<li class="text-red-600">Chyba: ${e.message}</li>`;
+            `<li class="text-red-600">Error, false input: ${e.message}</li>`;
+            `<li class="text-red-600">Error, false input: ${e.message}</li>`;
     }
 }
 document.getElementById('garages').addEventListener('click', loadGarages);
@@ -170,14 +170,22 @@ async function loadReservations(spotId) {
         const data = normalizeReservationsPayload(raw);
 
         if (data === null) {
-            const preview = typeof raw === 'object' ? JSON.stringify(raw, null, 2) : String(raw);
+            let preview;
+
+            if (typeof raw === 'object' && raw !== null) {
+                preview = Object.entries(raw)
+                    .map(([key, value]) => `${key}: ${value}`)
+                    .join('<br>');
+            } else {
+                preview = String(raw);
+            }
             outputEl.innerHTML = `
-        <div class="text-amber-700">Neočakávaný tvar odpovede (čakalo sa pole alebo {content:[...]}).</div>
-        <pre class="mt-2 p-2 rounded bg-gray-50 text-xs overflow-auto">${preview}</pre>
-      `;
-            outputEl.className = 'mt-3 text-sm';
-            return;
+                <div class="mt-2 p-2 rounded bg-gray-50 text-sm">
+                    ${preview}
+                </div>
+            `;
         }
+
 
         if (data.length === 0) {
             outputEl.innerHTML = '<span class="text-gray-500">Žiadne rezervácie pre tento spot.</span>';
@@ -192,8 +200,8 @@ async function loadReservations(spotId) {
         outputEl.className = 'mt-3 text-sm text-gray-800';
     } catch (e) {
         const details = e && e.payload ? `<pre class="mt-2 p-2 rounded bg-red-50 text-xs overflow-auto">${JSON.stringify(e.payload, null, 2)}</pre>` : '';
-        outputEl.innerHTML = `<div class="text-red-700">Kazda revzervacia musi prisluchat jednemu autu v garazi</div>${details}`;
-        outputEl.className = 'mt-3 text-sm';
+        /*outputEl.innerHTML = `<div class="text-red-700">Kazda revzervacia musi prisluchat jednemu autu v garazi</div>${details}`;
+        outputEl.className = 'mt-3 text-sm';*/
     }
 }
 
