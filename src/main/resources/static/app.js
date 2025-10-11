@@ -1,12 +1,15 @@
 const API = 'http://localhost:8081/api';
 
-
 const setStatus = (t) => { /* document.getElementById('status').textContent = t */ };
 
 async function http(url, opts = {}) {
     setStatus('Loading...');
     try {
-        const res = await fetch(url, { headers: { Accept: 'application/json' }, ...opts });
+        const headers = opts.method === 'DELETE'
+            ? { Accept: 'application/json' }
+            : { Accept: 'application/json', 'Content-Type': 'application/json' };
+
+        const res = await fetch(url, { ...opts, headers });
 
         const ct = (res.headers.get('content-type') || '').toLowerCase();
         const isJson = ct.includes('application/json');
@@ -61,6 +64,44 @@ document.getElementById('garageForm').addEventListener('submit', async (e) => {
 });
 
 document.addEventListener('DOMContentLoaded', loadGarages);
+
+document.addEventListener('DOMContentLoaded', () => {
+    const form = document.getElementById('deleteGarageForm');
+    if (!form) {
+        console.error('❌ deleteGarageForm not found in DOM');
+        return;
+    }
+
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const id = document.getElementById('garageIdDel').value.trim();
+        const output = document.getElementById('delGarageOutput');
+
+        if (!id) {
+            output.textContent = 'Garage ID is required';
+            output.classList.add('text-red-600');
+            return;
+        }
+
+        try {
+            await http(`${API}/garages/${encodeURIComponent(id)}`, { method: 'DELETE' });
+            document.getElementById('garageIdDel').value = '';
+            output.textContent = `✅ Garage #${id} deleted`;
+            output.classList.remove('text-red-600');
+            output.classList.add('text-green-700');
+            await loadGarages();
+        } catch (err) {
+            output.textContent = `❌ Error deleting garage: ${err.message}`;
+            output.classList.remove('text-green-700');
+            output.classList.add('text-red-600');
+        }
+    });
+});
+
+
+
+//document.getElementById('garages').addEventListener('click', loadGarages);
+
 
 
 async function loadSpots(garageId){

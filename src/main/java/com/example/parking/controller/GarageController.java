@@ -31,7 +31,7 @@ public class GarageController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@RequestParam Long id){
+    public ResponseEntity<Void> delete(@PathVariable Long id){
         // Deletion logic to be implemented in the service layer
         service.deleteGarage(id);
         return ResponseEntity.noContent().build();
