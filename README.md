@@ -64,8 +64,8 @@ The application was created as part of a university project and serves as a demo
 
 ### UI Screenshots
 <p align="center">
-  <img src="screenshots/Screenshot_1.png" alt="First screenshot", width="500"/>
-  <img src="screenshots/Screenshot_2.png" alt="Second screenshot", width ="500"/>
+  <img src="screenshots/Screenshot_1.png" alt="First screenshot", width=""/>
+  <img src="screenshots/Screenshot_2.png" alt="Second screenshot", width =""/>
 </p>
 
 ## 🌍 REST API Endpoints
