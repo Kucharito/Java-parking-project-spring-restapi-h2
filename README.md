@@ -61,6 +61,13 @@ The application was created as part of a university project and serves as a demo
 
 ---
 
+
+### UI Screenshots
+<p align="center">
+  <img src="screenshots/Screenshot_1.png" alt="First screenshot", width="500"/>
+  <img src="screenshots/Screenshot_2.png" alt="Second screenshot", width ="500"/>
+</p>
+
 ## 🌍 REST API Endpoints
 
 ### Garages
@@ -165,9 +172,10 @@ curl -X DELETE "http://localhost:8081/api/reservations/1" -H "accept: */*"
 
 
 ### TODOs 
-- Implement DELETE endpoints for garages, spots, and reservations
-- Implement UPDATE endpoints (PUT)
-- Add simple **frontend** for interaction with REST API
+- Separate frontend views by user roles:
+  -  Admin dashboard (management of garages, spots, reservations)
+  -  Client-facing booking interface (create/check reservations)
+
 
 
 ## 🧑‍💻 Author

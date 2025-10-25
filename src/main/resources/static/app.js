@@ -263,12 +263,11 @@ const plateInput = document.getElementById('resPlate');
 const startInput = document.getElementById('startTime');
 const endInput = document.getElementById('endTime');
 const outputEl = document.getElementById('resOutput');
-// === FIX: normalizácia odpovede ===
 function normalizeReservationsPayload(data) {
     if (data === null || data === undefined) return [];
     if (Array.isArray(data)) return data;
-    if (data && Array.isArray(data.content)) return data.content;                  // Spring Page
-    if (data && data._embedded && Array.isArray(data._embedded.reservations)) {   // HATEOAS
+    if (data && Array.isArray(data.content)) return data.content;
+    if (data && data._embedded && Array.isArray(data._embedded.reservations)) {
         return data._embedded.reservations;
     }
     return null; // neočakávaný tvar
